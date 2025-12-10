@@ -1,0 +1,118 @@
+services:
+  - type: web
+    name: backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    command: gunicorn digi_farm.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: db
+          property: connectionString
+      - key: REDIS_URL
+        fromRedis:
+          name: redis
+          property: connectionString
+      - key: DJANGO_SETTINGS_MODULE
+        value: digi_farm.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: CELERY_BROKER_URL
+        fromRedis:
+          name: redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromRedis:
+          name: redis
+          property: connectionString
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@example.com
+      - key: DJANGO_SUPERUSER_PASSWORD
+        generateValue: true
+    healthCheckPath: /health/
+    disk:
+      name: backend-media
+      mountPath: /app/media
+      sizeGB: 1
+
+  - type: static_site
+    name: frontend
+    runtime: node
+    buildCommand: npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://backend.onrender.com/api
+
+  - type: background_worker
+    name: celery-worker
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: db
+          property: connectionString
+      - key: REDIS_URL
+        fromRedis:
+          name: redis
+          property: connectionString
+      - key: DJANGO_SETTINGS_MODULE
+        value: digi_farm.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: CELERY_BROKER_URL
+        fromRedis:
+          name: redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromRedis:
+          name: redis
+          property: connectionString
+    command: celery -A digi_farm worker -l info
+
+  - type: background_worker
+    name: celery-beat
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: db
+          property: connectionString
+      - key: REDIS_URL
+        fromRedis:
+          name: redis
+          property: connectionString
+      - key: DJANGO_SETTINGS_MODULE
+        value: digi_farm.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: CELERY_BROKER_URL
+        fromRedis:
+          name: redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromRedis:
+          name: redis
+          property: connectionString
+    command: celery -A digi_farm beat -l info
+
+databases:
+  - name: db
+    databaseName: digifarm
+    user: postgres
+
+redis:
+  - name: redis
