@@ -1,0 +1,307 @@
+{
+  "info": {
+    "name": "DigiFarm Assist API",
+    "description": "API collection for DigiFarm Assist - Agricultural assistance platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"farmer@example.com\",\n  \"password\": \"password123\",\n  \"password2\": \"password123\",\n  \"phone_number\": \"+254712345678\",\n  \"role\": \"farmer\",\n  \"location\": \"Nairobi\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register", ""]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"farmer@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/me/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "me", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Farms",
+      "item": [
+        {
+          "name": "Create Farm",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Farm\",\n  \"description\": \"A beautiful farm\",\n  \"location\": \"Nairobi\",\n  \"latitude\": \"-1.2921\",\n  \"longitude\": \"36.8219\",\n  \"size_hectares\": \"5.0\",\n  \"soil_type\": \"Loamy\",\n  \"main_crops\": [\"Tomatoes\", \"Kale\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/farms/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "farms", ""]
+            }
+          }
+        },
+        {
+          "name": "List Farms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/farms/?county=Nairobi",
+              "host": ["{{base_url}}"],
+              "path": ["api", "farms", ""],
+              "query": [
+                {
+                  "key": "county",
+                  "value": "Nairobi"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Diagnosis",
+      "item": [
+        {
+          "name": "Upload Crop Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "notes",
+                  "value": "Test crop image",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/diagnosis/upload/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "diagnosis", "upload", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Diagnosis Result",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/diagnosis/upload/1/result/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "diagnosis", "upload", "1", "result", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Marketplace",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/marketplace/products/?search=tomato",
+              "host": ["{{base_url}}"],
+              "path": ["api", "marketplace", "products", ""],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "tomato"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_items\": [\n    {\"product_id\": 1, \"quantity\": 2}\n  ],\n  \"shipping_address\": \"123 Main St\",\n  \"shipping_county\": \"Nairobi\",\n  \"shipping_phone\": \"+254712345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/marketplace/orders/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "marketplace", "orders", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Initiate STK Push",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1,\n  \"phone\": \"+254712345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payments/mpesa/initiate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "mpesa", "initiate", ""]
+            }
+          }
+        },
+        {
+          "name": "M-Pesa Webhook (Simulate)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Body\": {\n    \"stkCallback\": {\n      \"ResultCode\": 0,\n      \"ResultDesc\": \"The service request is processed successfully.\",\n      \"CheckoutRequestID\": \"ws_CO_123456789\",\n      \"CallbackMetadata\": {\n        \"Item\": [\n          {\"Name\": \"Amount\", \"Value\": 100},\n          {\"Name\": \"MpesaReceiptNumber\", \"Value\": \"QLTEST123\"},\n          {\"Name\": \"TransactionDate\", \"Value\": \"20240101120000\"},\n          {\"Name\": \"PhoneNumber\", \"Value\": \"254712345678\"}\n        ]\n      }\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payments/mpesa/webhook/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "mpesa", "webhook", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Knowledge",
+      "item": [
+        {
+          "name": "List Articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/knowledge/articles/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "knowledge", "articles", ""]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
+

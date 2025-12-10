@@ -1,0 +1,4 @@
+web: gunicorn digi_farm.wsgi:application --bind 0.0.0.0:$PORT --workers 4
+celery: celery -A digi_farm worker -l info
+celery-beat: celery -A digi_farm beat -l info
+
