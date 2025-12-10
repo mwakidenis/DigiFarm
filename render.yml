@@ -47,7 +47,10 @@ services:
     publishDir: dist
     envVars:
       - key: VITE_API_URL
-        value: https://backend.onrender.com/api
+        fromService:
+          type: web
+          name: backend
+          property: host
 
   - type: background_worker
     name: celery-worker
